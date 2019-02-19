@@ -1,15 +1,23 @@
 version: 0.1
 
-# This is a configuration file for AWS CodeBuild.  It just runs maven.
+# This is a configuration file for AWS CodeBuild.  
+# It runs maven.  Then builds your Dockerfile.  Then pushes to DockerHub.
+
 phases:
+  pre_build:
+    commands:
+      - docker login -u $(DOCKER_HUB_USER) -p $(DOCKER_HUB_PASSWORD)
   build:
     commands:
       - echo Build started on `date`
-      - mvn test
+      - mvn package
   post_build:
     commands:
       - echo Build completed on `date`
-      - mvn package
+      - echo Building the Docker image...          
+      - docker build -t microservice-demo-product:latest .
+      - echo Pushing the Docker image...
+      - docker push microservice-demo-product:latest   
 artifacts:
   files:
     - target/microservice-demo-product-1.war
