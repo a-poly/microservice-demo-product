@@ -4,6 +4,14 @@ version: 0.1
 # It runs maven.  Then builds your Dockerfile.  Then pushes to DockerHub.
 
 phases:
+  install:
+    commands:
+      - apt-get update -y
+      - apt-get install -y software-properties-common
+      - add-apt-repository ppa:openjdk-r/ppa
+      - apt-get update -y
+      - apt-get install -y openjdk-8-jdk
+      - apt-get install -y maven
   pre_build:
     commands:
       - printenv
