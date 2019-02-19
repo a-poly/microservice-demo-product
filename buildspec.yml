@@ -22,7 +22,6 @@ phases:
 #      - apt-get install -y maven
   pre_build:
     commands:
-      - printenv
       - docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD}
   build:
     commands:
