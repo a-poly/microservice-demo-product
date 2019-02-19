@@ -6,6 +6,7 @@ version: 0.1
 phases:
   pre_build:
     commands:
+      - printenv
       - docker login -u $(DOCKER_HUB_USER) -p $(DOCKER_HUB_PASSWORD)
   build:
     commands:
