@@ -1,17 +1,21 @@
 version: 0.1
 
 # This is a configuration file for AWS CodeBuild.  
+# It is assuming we are running in a build project based on aws/codebuild/docker:17.09.0
+# Unfortunately, this image does not know how to do a Java / Maven build, and the Java image doesn't know Docker.
+# So the first thing we do is install Java and Maven, which takes about 4 minutes.
+# The login to DockerHub is so we can push the image at the end.  Build project provides the env variables.
 # It runs maven.  Then builds your Dockerfile.  Then pushes to DockerHub.
 
 phases:
   install:
     commands:
-      - apt-get update -y
-      - apt-get install -y software-properties-common
-      - add-apt-repository ppa:openjdk-r/ppa
-      - apt-get update -y
-      - apt-get install -y openjdk-8-jdk
-      - apt-get install -y maven
+#      - apt-get update -y
+#      - apt-get install -y software-properties-common
+#      - add-apt-repository ppa:openjdk-r/ppa
+#      - apt-get update -y
+#      - apt-get install -y openjdk-8-jdk
+#      - apt-get install -y maven
   pre_build:
     commands:
       - printenv
@@ -26,7 +30,8 @@ phases:
       - echo Building the Docker image...          
       - docker build -t microservice-demo-product:latest .
       - echo Pushing the Docker image...
-      - docker push microservice-demo-product:latest   
+      - docker tag microservice-demo-product:latest ${DOCKER_HUB_USER}/microservice-demo-product:latest
+      - docker push ${DOCKER_HUB_USER}/microservice-demo-product:latest   
 artifacts:
   files:
     - target/microservice-demo-product-1.war
